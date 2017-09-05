@@ -19,6 +19,10 @@
       <tbody id="tableList">
         
       </tbody>
+
+      <div id="testHelper">
+
+      </div>
     </table>
     
     <!--插件引用-->
@@ -35,12 +39,23 @@
           <td>{{sex}}</td>
           <td>{{age}}</td>
           {{#compare age 20}}
+
+          {{!返回结果}}
             <td>{{homePage}}</td>
           {{else}}
+
+          {{!返回html}}
             <td>{{{homePage}}}</td>
           {{/compare}}
         </tr> 
       {{/each}}
+      
+          {{#if_even this.data3.num}}
+               <p> {{this.data3.num}}偶数</p>
+          {{else}}
+                 <p>{{this.data3.num}}奇数</p>
+          {{/if_even}}
+       
     </script>
     
     <!--进行数据处理、html构造-->
@@ -67,7 +82,8 @@
                             "age": 19,
                             "homePage":"<a href='javascript:void(0);'>妞妞的个人主页</a>"
                         }
-                    ]
+                    ],
+                   data3:{num:2}
                 };
         
         //注册一个Handlebars模版，通过id找到某一个模版，获取模版的html框架
@@ -76,6 +92,11 @@
         
         //注册一个比较数字大小的Helper,有options参数，块级Helper
         Handlebars.registerHelper("compare",function(v1,v2,options){
+          // options 包括上下午信息
+          console.log(v1) // 数据本来的值
+          console.log(v2) // 定义的值
+          // console.log(options)
+          
           //判断v1是否比v2大
           if(v1>v2){
             //继续执行
@@ -85,10 +106,68 @@
             return options.inverse(this);
           }
         });
+
+        //判断是否是偶数
+      Handlebars.registerHelper('if_even', function(value, options) {
+          console.log('value:', value); // value: 2
+          console.log('this:', this); // this: Object {num: 2}
+          console.log('fn(this):', options.fn(this)); // fn(this): 2是偶数
+          if((value % 2) == 0) {
+            // options.fn 将你传入的上下文主体编译到模板中，返回编译后的结果
+            // 将this传入进去，就可以使用this,这里的this就是整个数据
+              return options.fn(this);
+          } else {
+            // options.inverse() 取反 相当于else
+              return options.inverse(this);
+          }
+      });
         
         //将json对象用刚刚注册的Handlebars模版封装，得到最终的html，插入到基础table中。
         $('#tableList').html(myTemplate(data));
       });
     </script>
+
+<script id="test-template" type="text/x-handlebars-template">
+  {{#list people class="green"}}{{firstName}}-----{{lastName}}{{/list}}
+  {{#list people class="red"}}{{firstName}}-----{{lastName}}{{/list}}
+
+</script>
+
+
+
+
+
+   <!--进行数据处理、html构造-->
+   <script type="text/javascript">
+    $(document).ready(function() {
+        //模拟的json对象
+        var data2 = {
+          people: [
+              {firstName: "Yehuda", lastName: "Katz"},
+              {firstName: "Carl", lastName: "Lerche"},
+              {firstName: "Alan", lastName: "Johnson"}
+           ]    
+        };
+        Handlebars.registerHelper('list', function(items, options) {
+            var out = '<ul>';
+            console.log(items)
+            for(var i=0, l=items.length; i<l; i++) {
+                var item = options.fn(items[i]);
+                out = out + '<li class="'+options.hash.class+'">' + item + '</li>';
+            }
+            return out + '</ul>';
+      });
+        //注册一个Handlebars模版，通过id找到某一个模版，获取模版的html框架
+        //$("#table-template").html()是jquery的语法，不懂的童鞋请恶补。。。
+        var myTemplate = Handlebars.compile($("#test-template").html());
+        
+      
+      
+        
+        //将json对象用刚刚注册的Handlebars模版封装，得到最终的html，插入到基础table中。
+        $('#testHelper').html(myTemplate(data2));
+    });
+  </script>
+ 
   </body>
 </html>

@@ -88,6 +88,7 @@
         
         //注册一个翻译用的Helper，0翻译成男，1翻译成女
         Handlebars.registerHelper("transformat",function(value){
+          console.log(value)
           if(value==0){
             return "男";
           }else if(value==1){

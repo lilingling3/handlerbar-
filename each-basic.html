@@ -21,13 +21,14 @@
     </table>
     
     <!--插件引用-->
-    <script type="text/javascript" src="script/jquery.js"></script>
     <script type="text/javascript" src="script/handlebars-1.0.0.beta.6.js"></script>
+    <script type="text/javascript" src="script/jquery.js"></script>
     
     <!--Handlebars.js模版-->
     <!--Handlebars.js模版放在script标签中，保留了html原有层次结构,模版中要写一些操作语句-->
     <!--id可以用来唯一确定一个模版,type是模版固定的写法-->
     <script id="table-template" type="text/x-handlebars-template">
+      <!-- 默认是循环 -->
       {{#each student}}
         <tr>
           <td>{{name}}</td>
